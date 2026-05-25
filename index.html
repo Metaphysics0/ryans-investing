@@ -1,374 +1,554 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Investment Projector</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ryan's Investment Projector</title>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+		<style>
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
 
-    body {
-      background: #f1f5f9;
-      color: #1e293b;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      min-height: 100vh;
-      padding: 1rem 1.25rem;
-    }
+			body {
+				background: #f1f5f9;
+				color: #1e293b;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+				min-height: 100vh;
+				padding: 1rem 1.25rem;
+			}
 
-    .container { max-width: 1080px; margin: 0 auto; }
+			.container {
+				max-width: 1080px;
+				margin: 0 auto;
+			}
 
-    header { text-align: center; margin-bottom: 0.75rem; }
-    header h1 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #1d4ed8;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.15rem;
-    }
-    header p { color: #94a3b8; font-size: 0.75rem; }
+			header {
+				text-align: center;
+				margin-bottom: 0.75rem;
+			}
+			header h1 {
+				font-size: 1.2rem;
+				font-weight: 700;
+				color: #1d4ed8;
+				letter-spacing: -0.02em;
+				margin-bottom: 0.15rem;
+			}
+			header p {
+				color: #94a3b8;
+				font-size: 0.75rem;
+			}
 
-    .tickers {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-bottom: 0.75rem;
-    }
-    .ticker {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      color: #64748b;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 0.15rem 0.55rem;
-      border-radius: 999px;
-    }
+			.tickers {
+				display: flex;
+				justify-content: center;
+				flex-wrap: wrap;
+				gap: 0.35rem;
+				margin-bottom: 0.75rem;
+			}
+			.ticker {
+				background: #fff;
+				border: 1px solid #e2e8f0;
+				color: #64748b;
+				font-size: 0.7rem;
+				font-weight: 600;
+				letter-spacing: 0.04em;
+				padding: 0.15rem 0.55rem;
+				border-radius: 999px;
+			}
 
-    /* ── Cards ── */
-    .card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
-    }
+			/* ── Cards ── */
+			.card {
+				background: #fff;
+				border: 1px solid #e2e8f0;
+				border-radius: 10px;
+				padding: 1rem 1.25rem;
+				margin-bottom: 0.75rem;
+			}
 
-    .sliders-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.85rem 2rem;
-    }
+			.sliders-grid {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 0.85rem 2rem;
+			}
 
-    .slider-group { display: flex; flex-direction: column; gap: 0.3rem; }
+			.slider-group {
+				display: flex;
+				flex-direction: column;
+				gap: 0.3rem;
+			}
 
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-    .slider-name { font-size: 0.72rem; color: #64748b; }
-    .slider-val  { font-size: 0.88rem; font-weight: 700; color: #1d4ed8; }
+			.slider-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+			}
+			.slider-name {
+				font-size: 0.72rem;
+				color: #64748b;
+			}
+			.slider-val {
+				font-size: 0.88rem;
+				font-weight: 700;
+				color: #1d4ed8;
+			}
 
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 4px;
-      border-radius: 3px;
-      background: #e2e8f0;
-      outline: none;
-      cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px; height: 14px;
-      background: #3b82f6;
-      border-radius: 50%;
-      border: 2px solid #1d4ed8;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    input[type="range"]::-webkit-slider-thumb:hover { background: #60a5fa; }
+			input[type="range"] {
+				-webkit-appearance: none;
+				width: 100%;
+				height: 4px;
+				border-radius: 3px;
+				background: #e2e8f0;
+				outline: none;
+				cursor: pointer;
+			}
+			input[type="range"]::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				width: 14px;
+				height: 14px;
+				background: #3b82f6;
+				border-radius: 50%;
+				border: 2px solid #1d4ed8;
+				cursor: pointer;
+				transition: background 0.15s;
+			}
+			input[type="range"]::-webkit-slider-thumb:hover {
+				background: #60a5fa;
+			}
 
-    /* effective capital banner */
-    .eff-banner {
-      margin-top: 0.85rem;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-    .eff-left .label { font-size: 0.7rem; color: #64748b; margin-bottom: 0.1rem; }
-    .eff-left .breakdown { font-size: 0.68rem; color: #94a3b8; }
-    .eff-total { font-size: 1.15rem; font-weight: 700; color: #16a34a; }
+			/* effective capital banner */
+			.eff-banner {
+				margin-top: 0.85rem;
+				background: #eff6ff;
+				border: 1px solid #bfdbfe;
+				border-radius: 8px;
+				padding: 0.6rem 1rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+			}
+			.eff-left .label {
+				font-size: 0.7rem;
+				color: #64748b;
+				margin-bottom: 0.1rem;
+			}
+			.eff-left .breakdown {
+				font-size: 0.68rem;
+				color: #94a3b8;
+			}
+			.eff-total {
+				font-size: 1.15rem;
+				font-weight: 700;
+				color: #16a34a;
+			}
 
-    /* ── Projection cards ── */
-    .proj-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
+			/* ── Projection cards ── */
+			.proj-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 0.75rem;
+				margin-bottom: 0.75rem;
+			}
 
-    .proj-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 0.85rem 1rem;
-    }
-    .proj-year {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #94a3b8;
-      margin-bottom: 0.6rem;
-    }
+			.proj-card {
+				background: #fff;
+				border: 1px solid #e2e8f0;
+				border-radius: 10px;
+				padding: 0.85rem 1rem;
+			}
+			.proj-year {
+				font-size: 0.65rem;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				color: #94a3b8;
+				margin-bottom: 0.6rem;
+			}
 
-    .scenario {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.35rem 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-    .scenario:last-child { border-bottom: none; }
+			.scenario {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.35rem 0;
+				border-bottom: 1px solid #f1f5f9;
+			}
+			.scenario:last-child {
+				border-bottom: none;
+			}
 
-    .sc-left { display: flex; align-items: center; gap: 0.35rem; }
-    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .dot-opt { background: #16a34a; }
-    .dot-avg { background: #2563eb; }
-    .dot-con { background: #d97706; }
+			.sc-left {
+				display: flex;
+				align-items: center;
+				gap: 0.35rem;
+			}
+			.dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				flex-shrink: 0;
+			}
+			.dot-opt {
+				background: #16a34a;
+			}
+			.dot-avg {
+				background: #2563eb;
+			}
+			.dot-con {
+				background: #d97706;
+			}
 
-    .sc-label { font-size: 0.72rem; color: #64748b; }
+			.sc-label {
+				font-size: 0.72rem;
+				color: #64748b;
+			}
 
-    .sc-right { text-align: right; }
-    .sc-amount { font-size: 0.85rem; font-weight: 700; }
-    .amt-opt { color: #16a34a; }
-    .amt-avg { color: #2563eb; }
-    .amt-con { color: #d97706; }
-    .sc-gain { font-size: 0.63rem; color: #94a3b8; margin-top: 0.05rem; }
+			.sc-right {
+				text-align: right;
+			}
+			.sc-amount {
+				font-size: 0.85rem;
+				font-weight: 700;
+			}
+			.amt-opt {
+				color: #16a34a;
+			}
+			.amt-avg {
+				color: #2563eb;
+			}
+			.amt-con {
+				color: #d97706;
+			}
+			.sc-gain {
+				font-size: 0.63rem;
+				color: #94a3b8;
+				margin-top: 0.05rem;
+			}
 
-    /* ── Chart ── */
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 0.75rem;
-    }
-    .chart-title { font-size: 0.78rem; color: #64748b; font-weight: 600; }
+			/* ── Chart ── */
+			.chart-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+				margin-bottom: 0.75rem;
+			}
+			.chart-title {
+				font-size: 0.78rem;
+				color: #64748b;
+				font-weight: 600;
+			}
 
-    .legend {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: #94a3b8; }
-    .legend-line { width: 16px; height: 2.5px; border-radius: 2px; }
-    .legend-dash { width: 16px; height: 0; border-top: 2px dashed #cbd5e1; }
+			.legend {
+				display: flex;
+				gap: 1rem;
+				flex-wrap: wrap;
+			}
+			.legend-item {
+				display: flex;
+				align-items: center;
+				gap: 0.3rem;
+				font-size: 0.68rem;
+				color: #94a3b8;
+			}
+			.legend-line {
+				width: 16px;
+				height: 2.5px;
+				border-radius: 2px;
+			}
+			.legend-dash {
+				width: 16px;
+				height: 0;
+				border-top: 2px dashed #cbd5e1;
+			}
 
-    @media (max-width: 680px) {
-      .sliders-grid  { grid-template-columns: 1fr; }
-      .proj-grid     { grid-template-columns: 1fr; }
-      .chart-header  { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
-</head>
-<body>
-<div class="container">
+			@media (max-width: 680px) {
+				.sliders-grid {
+					grid-template-columns: 1fr;
+				}
+				.proj-grid {
+					grid-template-columns: 1fr;
+				}
+				.chart-header {
+					flex-direction: column;
+					align-items: flex-start;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Ryan's Investment Projector</h1>
+				<p>Optimistic · Average · Conservative growth scenarios</p>
+			</header>
 
-  <header>
-    <h1>Investment Projector</h1>
-    <p>Optimistic · Average · Conservative growth scenarios</p>
-  </header>
+			<div class="tickers">
+				<span class="ticker">VTI</span>
+				<span class="ticker">VXUS</span>
+				<span class="ticker">BND</span>
+				<span class="ticker">VNQ</span>
+				<span class="ticker">SGOV</span>
+			</div>
 
-  <div class="tickers">
-    <span class="ticker">VTI</span>
-    <span class="ticker">VXUS</span>
-    <span class="ticker">BND</span>
-    <span class="ticker">VNQ</span>
-    <span class="ticker">SGOV</span>
-  </div>
+			<!-- Sliders -->
+			<div class="card">
+				<div class="sliders-grid">
+					<div class="slider-group">
+						<div class="slider-header">
+							<span class="slider-name">Starting Capital (USD)</span>
+							<span class="slider-val" id="v-capital">$12,870</span>
+						</div>
+						<input
+							type="range"
+							id="s-capital"
+							min="0"
+							max="150000"
+							step="500"
+							value="12870"
+						/>
+					</div>
 
-  <!-- Sliders -->
-  <div class="card">
-    <div class="sliders-grid">
+					<div class="slider-group">
+						<div class="slider-header">
+							<span class="slider-name">Monthly Contribution</span>
+							<span class="slider-val" id="v-monthly">$2,000</span>
+						</div>
+						<input
+							type="range"
+							id="s-monthly"
+							min="0"
+							max="10000"
+							step="100"
+							value="2000"
+						/>
+					</div>
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span class="slider-name">Starting Capital (USD)</span>
-          <span class="slider-val" id="v-capital">$12,870</span>
-        </div>
-        <input type="range" id="s-capital" min="0" max="150000" step="500" value="12870" />
-      </div>
+					<div class="slider-group">
+						<div class="slider-header">
+							<span class="slider-name">NIS → USD Rate (₪ per $1)</span>
+							<span class="slider-val" id="v-rate">3.60</span>
+						</div>
+						<input
+							type="range"
+							id="s-rate"
+							min="3.00"
+							max="5.50"
+							step="0.05"
+							value="3.60"
+						/>
+					</div>
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span class="slider-name">Monthly Contribution</span>
-          <span class="slider-val" id="v-monthly">$2,000</span>
-        </div>
-        <input type="range" id="s-monthly" min="0" max="10000" step="100" value="2000" />
-      </div>
+					<div class="slider-group">
+						<div class="slider-header">
+							<span class="slider-name">Starting NIS to Invest (₪)</span>
+							<span class="slider-val" id="v-nis">₪40,000</span>
+						</div>
+						<input
+							type="range"
+							id="s-nis"
+							min="0"
+							max="200000"
+							step="1000"
+							value="40000"
+						/>
+					</div>
+				</div>
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span class="slider-name">NIS → USD Rate (₪ per $1)</span>
-          <span class="slider-val" id="v-rate">3.60</span>
-        </div>
-        <input type="range" id="s-rate" min="3.00" max="5.50" step="0.05" value="3.60" />
-      </div>
+				<div class="eff-banner">
+					<div class="eff-left">
+						<div class="label">Effective Starting Capital</div>
+						<div class="breakdown" id="breakdown">—</div>
+					</div>
+					<div class="eff-total" id="eff-total">—</div>
+				</div>
+			</div>
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span class="slider-name">NIS to Invest (₪)</span>
-          <span class="slider-val" id="v-nis">₪40,000</span>
-        </div>
-        <input type="range" id="s-nis" min="0" max="200000" step="1000" value="40000" />
-      </div>
+			<!-- Projection cards -->
+			<div class="proj-grid" id="proj-grid"></div>
 
-    </div>
+			<!-- Chart -->
+			<div class="card">
+				<div class="chart-header">
+					<span class="chart-title">Portfolio Growth — 10-Year Horizon</span>
+					<div class="legend">
+						<div class="legend-item">
+							<div class="legend-line" style="background: #16a34a"></div>
+							Optimistic 10%
+						</div>
+						<div class="legend-item">
+							<div class="legend-line" style="background: #2563eb"></div>
+							Average 7%
+						</div>
+						<div class="legend-item">
+							<div class="legend-line" style="background: #d97706"></div>
+							Conservative 5%
+						</div>
+						<div class="legend-item">
+							<div class="legend-dash"></div>
+							Contributions
+						</div>
+					</div>
+				</div>
+				<canvas id="chart" height="90"></canvas>
+			</div>
+		</div>
+		<script>
+			// ── helpers ──────────────────────────────────────────────────────────────
+			const $ = (id) => document.getElementById(id);
 
-    <div class="eff-banner">
-      <div class="eff-left">
-        <div class="label">Effective Starting Capital</div>
-        <div class="breakdown" id="breakdown">— </div>
-      </div>
-      <div class="eff-total" id="eff-total">—</div>
-    </div>
-  </div>
+			function fv(principal, pmt, rMonthly, months) {
+				if (rMonthly === 0) return principal + pmt * months;
+				const g = Math.pow(1 + rMonthly, months);
+				return principal * g + (pmt * (g - 1)) / rMonthly;
+			}
 
-  <!-- Projection cards -->
-  <div class="proj-grid" id="proj-grid"></div>
+			function usd(n) {
+				return "$" + Math.round(n).toLocaleString();
+			}
+			function pct(v, base) {
+				const g = ((v - base) / base) * 100;
+				return (g >= 0 ? "+" : "") + g.toFixed(0) + "%";
+			}
 
-  <!-- Chart -->
-  <div class="card">
-    <div class="chart-header">
-      <span class="chart-title">Portfolio Growth — 10-Year Horizon</span>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-line" style="background:#16a34a"></div>Optimistic 10%</div>
-        <div class="legend-item"><div class="legend-line" style="background:#2563eb"></div>Average 7%</div>
-        <div class="legend-item"><div class="legend-line" style="background:#d97706"></div>Conservative 5%</div>
-        <div class="legend-item"><div class="legend-dash"></div>Contributions</div>
-      </div>
-    </div>
-    <canvas id="chart" height="90"></canvas>
-  </div>
+			const RATES = {
+				opt: 0.1 / 12, // optimistic  10 % annual
+				avg: 0.07 / 12, // average      7 %
+				con: 0.05 / 12, // conservative 5 %
+			};
 
-</div>
-<script>
-  // ── helpers ──────────────────────────────────────────────────────────────
-  const $ = id => document.getElementById(id);
+			const YEARS = [5, 7, 10];
 
-  function fv(principal, pmt, rMonthly, months) {
-    if (rMonthly === 0) return principal + pmt * months;
-    const g = Math.pow(1 + rMonthly, months);
-    return principal * g + pmt * (g - 1) / rMonthly;
-  }
+			// ── chart ─────────────────────────────────────────────────────────────────
+			let chart;
 
-  function usd(n)  { return '$' + Math.round(n).toLocaleString(); }
-  function pct(v, base) {
-    const g = ((v - base) / base * 100);
-    return (g >= 0 ? '+' : '') + g.toFixed(0) + '%';
-  }
+			function buildChart(capital, monthly) {
+				const labels = [],
+					opt = [],
+					avg = [],
+					con = [],
+					contrib = [];
+				for (let m = 0; m <= 120; m++) {
+					labels.push(m % 12 === 0 ? (m === 0 ? "Now" : `Yr ${m / 12}`) : "");
+					opt.push(fv(capital, monthly, RATES.opt, m));
+					avg.push(fv(capital, monthly, RATES.avg, m));
+					con.push(fv(capital, monthly, RATES.con, m));
+					contrib.push(capital + monthly * m);
+				}
 
-  const RATES = {
-    opt: 0.10 / 12,   // optimistic  10 % annual
-    avg: 0.07 / 12,   // average      7 %
-    con: 0.05 / 12,   // conservative 5 %
-  };
+				if (chart) chart.destroy();
 
-  const YEARS = [5, 7, 10];
+				chart = new Chart($("chart"), {
+					type: "line",
+					data: {
+						labels,
+						datasets: [
+							{
+								label: "Optimistic",
+								data: opt,
+								borderColor: "#16a34a",
+								backgroundColor: "rgba(22,163,74,0.08)",
+								borderWidth: 2,
+								pointRadius: 0,
+								fill: true,
+								tension: 0.35,
+							},
+							{
+								label: "Average",
+								data: avg,
+								borderColor: "#2563eb",
+								backgroundColor: "rgba(37,99,235,0.08)",
+								borderWidth: 2,
+								pointRadius: 0,
+								fill: true,
+								tension: 0.35,
+							},
+							{
+								label: "Conservative",
+								data: con,
+								borderColor: "#d97706",
+								backgroundColor: "rgba(217,119,6,0.08)",
+								borderWidth: 2,
+								pointRadius: 0,
+								fill: true,
+								tension: 0.35,
+							},
+							{
+								label: "Contributed",
+								data: contrib,
+								borderColor: "#cbd5e1",
+								borderWidth: 1.5,
+								borderDash: [6, 4],
+								pointRadius: 0,
+								fill: false,
+								tension: 0,
+							},
+						],
+					},
+					options: {
+						responsive: true,
+						interaction: { mode: "index", intersect: false },
+						plugins: {
+							legend: { display: false },
+							tooltip: {
+								backgroundColor: "#fff",
+								borderColor: "#e2e8f0",
+								borderWidth: 1,
+								titleColor: "#1e293b",
+								bodyColor: "#475569",
+								callbacks: {
+									label: (ctx) =>
+										` ${ctx.dataset.label}: $${Math.round(ctx.parsed.y).toLocaleString()}`,
+								},
+							},
+						},
+						scales: {
+							x: {
+								grid: { color: "#f1f5f9" },
+								ticks: {
+									color: "#94a3b8",
+									maxRotation: 0,
+									autoSkip: false,
+									callback: (_, i) => labels[i],
+								},
+							},
+							y: {
+								grid: { color: "#f1f5f9" },
+								ticks: {
+									color: "#94a3b8",
+									callback: (v) =>
+										v >= 1e6
+											? "$" + (v / 1e6).toFixed(2) + "M"
+											: "$" + (v / 1e3).toFixed(0) + "K",
+								},
+							},
+						},
+					},
+				});
+			}
 
-  // ── chart ─────────────────────────────────────────────────────────────────
-  let chart;
+			// ── projection cards ───────────────────────────────────────────────────────
+			function buildCards(capital, monthly) {
+				const grid = $("proj-grid");
+				grid.innerHTML = "";
 
-  function buildChart(capital, monthly) {
-    const labels = [], opt = [], avg = [], con = [], contrib = [];
-    for (let m = 0; m <= 120; m++) {
-      labels.push(m % 12 === 0 ? (m === 0 ? 'Now' : `Yr ${m/12}`) : '');
-      opt.push(fv(capital, monthly, RATES.opt, m));
-      avg.push(fv(capital, monthly, RATES.avg, m));
-      con.push(fv(capital, monthly, RATES.con, m));
-      contrib.push(capital + monthly * m);
-    }
+				YEARS.forEach((yr) => {
+					const m = yr * 12;
+					const totalContrib = capital + monthly * m;
 
-    if (chart) chart.destroy();
+					const vals = {
+						opt: fv(capital, monthly, RATES.opt, m),
+						avg: fv(capital, monthly, RATES.avg, m),
+						con: fv(capital, monthly, RATES.con, m),
+					};
 
-    chart = new Chart($('chart'), {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          { label: 'Optimistic',     data: opt,    borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)',   borderWidth: 2, pointRadius: 0, fill: true,  tension: 0.35 },
-          { label: 'Average',        data: avg,    borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)',   borderWidth: 2, pointRadius: 0, fill: true,  tension: 0.35 },
-          { label: 'Conservative',   data: con,    borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,0.08)',  borderWidth: 2, pointRadius: 0, fill: true,  tension: 0.35 },
-          { label: 'Contributed',    data: contrib, borderColor: '#cbd5e1', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
-        ]
-      },
-      options: {
-        responsive: true,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#fff',
-            borderColor: '#e2e8f0',
-            borderWidth: 1,
-            titleColor: '#1e293b',
-            bodyColor: '#475569',
-            callbacks: {
-              label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.parsed.y).toLocaleString()}`
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: '#f1f5f9' },
-            ticks: {
-              color: '#94a3b8',
-              maxRotation: 0,
-              autoSkip: false,
-              callback: (_, i) => labels[i],
-            }
-          },
-          y: {
-            grid: { color: '#f1f5f9' },
-            ticks: {
-              color: '#94a3b8',
-              callback: v => v >= 1e6
-                ? '$' + (v / 1e6).toFixed(2) + 'M'
-                : '$' + (v / 1e3).toFixed(0) + 'K'
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // ── projection cards ───────────────────────────────────────────────────────
-  function buildCards(capital, monthly) {
-    const grid = $('proj-grid');
-    grid.innerHTML = '';
-
-    YEARS.forEach(yr => {
-      const m = yr * 12;
-      const totalContrib = capital + monthly * m;
-
-      const vals = {
-        opt: fv(capital, monthly, RATES.opt, m),
-        avg: fv(capital, monthly, RATES.avg, m),
-        con: fv(capital, monthly, RATES.con, m),
-      };
-
-      grid.innerHTML += `
+					grid.innerHTML += `
         <div class="proj-card">
           <div class="proj-year">${yr}-Year Projection</div>
 
@@ -406,37 +586,37 @@
           </div>
         </div>
       `;
-    });
-  }
+				});
+			}
 
-  // ── main update ────────────────────────────────────────────────────────────
-  function update() {
-    const capital = +$('s-capital').value;
-    const monthly = +$('s-monthly').value;
-    const rate    = +$('s-rate').value;
-    const nis     = +$('s-nis').value;
+			// ── main update ────────────────────────────────────────────────────────────
+			function update() {
+				const capital = +$("s-capital").value;
+				const monthly = +$("s-monthly").value;
+				const rate = +$("s-rate").value;
+				const nis = +$("s-nis").value;
 
-    const nisUsd   = nis / rate;
-    const effective = capital + nisUsd;
+				const nisUsd = nis / rate;
+				const effective = capital + nisUsd;
 
-    $('v-capital').textContent = '$' + capital.toLocaleString();
-    $('v-monthly').textContent = '$' + monthly.toLocaleString();
-    $('v-rate').textContent    = rate.toFixed(2);
-    $('v-nis').textContent     = '₪' + nis.toLocaleString();
+				$("v-capital").textContent = "$" + capital.toLocaleString();
+				$("v-monthly").textContent = "$" + monthly.toLocaleString();
+				$("v-rate").textContent = rate.toFixed(2);
+				$("v-nis").textContent = "₪" + nis.toLocaleString();
 
-    $('breakdown').textContent =
-      `$${capital.toLocaleString()} + ₪${nis.toLocaleString()} ÷ ${rate.toFixed(2)} = $${Math.round(nisUsd).toLocaleString()} NIS portion`;
-    $('eff-total').textContent = usd(effective);
+				$("breakdown").textContent =
+					`$${capital.toLocaleString()} + ₪${nis.toLocaleString()} ÷ ${rate.toFixed(2)} = $${Math.round(nisUsd).toLocaleString()} NIS portion`;
+				$("eff-total").textContent = usd(effective);
 
-    buildCards(effective, monthly);
-    buildChart(effective, monthly);
-  }
+				buildCards(effective, monthly);
+				buildChart(effective, monthly);
+			}
 
-  ['s-capital','s-monthly','s-rate','s-nis'].forEach(id =>
-    $(id).addEventListener('input', update)
-  );
+			["s-capital", "s-monthly", "s-rate", "s-nis"].forEach((id) =>
+				$(id).addEventListener("input", update),
+			);
 
-  update();
-</script>
-</body>
+			update();
+		</script>
+	</body>
 </html>
