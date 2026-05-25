@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investment Projector</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0b0f19;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    .container { max-width: 1080px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 2rem; }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+    header p { color: #64748b; font-size: 0.875rem; }
+
+    .tickers {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .ticker {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+    }
+
+    /* ── Sliders card ── */
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sliders-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.6rem 2.5rem;
+    }
+
+    .slider-group { display: flex; flex-direction: column; gap: 0.55rem; }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .slider-name { font-size: 0.82rem; color: #94a3b8; }
+    .slider-val  { font-size: 1.05rem; font-weight: 700; color: #60a5fa; }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 3px;
+      background: #1f2937;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 17px; height: 17px;
+      background: #3b82f6;
+      border-radius: 50%;
+      border: 2px solid #1d4ed8;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { background: #60a5fa; }
+
+    /* effective capital banner */
+    .eff-banner {
+      margin-top: 1.5rem;
+      background: #0b1220;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .eff-left .label { font-size: 0.78rem; color: #64748b; margin-bottom: 0.2rem; }
+    .eff-left .breakdown { font-size: 0.75rem; color: #475569; }
+    .eff-total { font-size: 1.5rem; font-weight: 700; color: #34d399; }
+
+    /* ── Projection cards ── */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .proj-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      padding: 1.4rem 1.5rem;
+    }
+    .proj-year {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
+
+    .scenario {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #0f172a;
+    }
+    .scenario:last-child { border-bottom: none; }
+
+    .sc-left { display: flex; align-items: center; gap: 0.45rem; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-opt { background: #34d399; }
+    .dot-avg { background: #60a5fa; }
+    .dot-con { background: #f59e0b; }
+
+    .sc-label { font-size: 0.8rem; color: #94a3b8; }
+
+    .sc-right { text-align: right; }
+    .sc-amount { font-size: 0.95rem; font-weight: 700; }
+    .amt-opt { color: #34d399; }
+    .amt-avg { color: #60a5fa; }
+    .amt-con { color: #f59e0b; }
+    .sc-gain { font-size: 0.7rem; color: #475569; margin-top: 0.1rem; }
+
+    /* ── Chart ── */
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .chart-title { font-size: 0.9rem; color: #94a3b8; font-weight: 600; }
+
+    .legend {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: #64748b; }
+    .legend-line { width: 18px; height: 3px; border-radius: 2px; }
+    .legend-dash { width: 18px; height: 0; border-top: 2px dashed #475569; }
+
+    @media (max-width: 680px) {
+      .sliders-grid  { grid-template-columns: 1fr; }
+      .proj-grid     { grid-template-columns: 1fr; }
+      .chart-header  { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Investment Projector</h1>
+    <p>Optimistic · Average · Conservative growth scenarios</p>
+  </header>
+
+  <div class="tickers">
+    <span class="ticker">VTI</span>
+    <span class="ticker">VXUS</span>
+    <span class="ticker">BND</span>
+    <span class="ticker">VNQ</span>
+    <span class="ticker">SGOV</span>
+  </div>
+
+  <!-- Sliders -->
+  <div class="card">
+    <div class="sliders-grid">
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-name">Starting Capital (USD)</span>
+          <span class="slider-val" id="v-capital">$12,870</span>
+        </div>
+        <input type="range" id="s-capital" min="0" max="150000" step="500" value="12870" />
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-name">Monthly Contribution</span>
+          <span class="slider-val" id="v-monthly">$2,000</span>
+        </div>
+        <input type="range" id="s-monthly" min="0" max="10000" step="100" value="2000" />
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-name">NIS → USD Rate (₪ per $1)</span>
+          <span class="slider-val" id="v-rate">3.60</span>
+        </div>
+        <input type="range" id="s-rate" min="3.00" max="5.50" step="0.05" value="3.60" />
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-name">NIS to Invest (₪)</span>
+          <span class="slider-val" id="v-nis">₪40,000</span>
+        </div>
+        <input type="range" id="s-nis" min="0" max="200000" step="1000" value="40000" />
+      </div>
+
+    </div>
+
+    <div class="eff-banner">
+      <div class="eff-left">
+        <div class="label">Effective Starting Capital</div>
+        <div class="breakdown" id="breakdown">— </div>
+      </div>
+      <div class="eff-total" id="eff-total">—</div>
+    </div>
+  </div>
+
+  <!-- Projection cards -->
+  <div class="proj-grid" id="proj-grid"></div>
+
+  <!-- Chart -->
+  <div class="card">
+    <div class="chart-header">
+      <span class="chart-title">Portfolio Growth — 10-Year Horizon</span>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-line" style="background:#34d399"></div>Optimistic 10%</div>
+        <div class="legend-item"><div class="legend-line" style="background:#60a5fa"></div>Average 7%</div>
+        <div class="legend-item"><div class="legend-line" style="background:#f59e0b"></div>Conservative 5%</div>
+        <div class="legend-item"><div class="legend-dash"></div>Contributions</div>
+      </div>
+    </div>
+    <canvas id="chart" height="90"></canvas>
+  </div>
+
+</div>
+<script>
+  // ── helpers ──────────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+
+  function fv(principal, pmt, rMonthly, months) {
+    if (rMonthly === 0) return principal + pmt * months;
+    const g = Math.pow(1 + rMonthly, months);
+    return principal * g + pmt * (g - 1) / rMonthly;
+  }
+
+  function usd(n)  { return '$' + Math.round(n).toLocaleString(); }
+  function pct(v, base) {
+    const g = ((v - base) / base * 100);
+    return (g >= 0 ? '+' : '') + g.toFixed(0) + '%';
+  }
+
+  const RATES = {
+    opt: 0.10 / 12,   // optimistic  10 % annual
+    avg: 0.07 / 12,   // average      7 %
+    con: 0.05 / 12,   // conservative 5 %
+  };
+
+  const YEARS = [5, 7, 10];
+
+  // ── chart ─────────────────────────────────────────────────────────────────
+  let chart;
+
+  function buildChart(capital, monthly) {
+    const labels = [], opt = [], avg = [], con = [], contrib = [];
+    for (let m = 0; m <= 120; m++) {
+      labels.push(m % 12 === 0 ? (m === 0 ? 'Now' : `Yr ${m/12}`) : '');
+      opt.push(fv(capital, monthly, RATES.opt, m));
+      avg.push(fv(capital, monthly, RATES.avg, m));
+      con.push(fv(capital, monthly, RATES.con, m));
+      contrib.push(capital + monthly * m);
+    }
+
+    if (chart) chart.destroy();
+
+    chart = new Chart($('chart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Optimistic',     data: opt,    borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.07)',  borderWidth: 2.5, pointRadius: 0, fill: true,  tension: 0.35 },
+          { label: 'Average',        data: avg,    borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.07)',  borderWidth: 2.5, pointRadius: 0, fill: true,  tension: 0.35 },
+          { label: 'Conservative',   data: con,    borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.07)', borderWidth: 2.5, pointRadius: 0, fill: true,  tension: 0.35 },
+          { label: 'Contributed',    data: contrib, borderColor: '#475569', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0f172a',
+            borderColor: '#1f2937',
+            borderWidth: 1,
+            callbacks: {
+              label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.parsed.y).toLocaleString()}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: '#1a2236' },
+            ticks: {
+              color: '#475569',
+              maxRotation: 0,
+              autoSkip: false,
+              callback: (_, i) => labels[i],
+            }
+          },
+          y: {
+            grid: { color: '#1a2236' },
+            ticks: {
+              color: '#475569',
+              callback: v => v >= 1e6
+                ? '$' + (v / 1e6).toFixed(2) + 'M'
+                : '$' + (v / 1e3).toFixed(0) + 'K'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // ── projection cards ───────────────────────────────────────────────────────
+  function buildCards(capital, monthly) {
+    const grid = $('proj-grid');
+    grid.innerHTML = '';
+
+    YEARS.forEach(yr => {
+      const m = yr * 12;
+      const totalContrib = capital + monthly * m;
+
+      const vals = {
+        opt: fv(capital, monthly, RATES.opt, m),
+        avg: fv(capital, monthly, RATES.avg, m),
+        con: fv(capital, monthly, RATES.con, m),
+      };
+
+      grid.innerHTML += `
+        <div class="proj-card">
+          <div class="proj-year">${yr}-Year Projection</div>
+
+          <div class="scenario">
+            <div class="sc-left">
+              <div class="dot dot-opt"></div>
+              <span class="sc-label">Optimistic</span>
+            </div>
+            <div class="sc-right">
+              <div class="sc-amount amt-opt">${usd(vals.opt)}</div>
+              <div class="sc-gain">${pct(vals.opt, totalContrib)} on all contributions</div>
+            </div>
+          </div>
+
+          <div class="scenario">
+            <div class="sc-left">
+              <div class="dot dot-avg"></div>
+              <span class="sc-label">Average</span>
+            </div>
+            <div class="sc-right">
+              <div class="sc-amount amt-avg">${usd(vals.avg)}</div>
+              <div class="sc-gain">${pct(vals.avg, totalContrib)} on all contributions</div>
+            </div>
+          </div>
+
+          <div class="scenario">
+            <div class="sc-left">
+              <div class="dot dot-con"></div>
+              <span class="sc-label">Conservative</span>
+            </div>
+            <div class="sc-right">
+              <div class="sc-amount amt-con">${usd(vals.con)}</div>
+              <div class="sc-gain">${pct(vals.con, totalContrib)} on all contributions</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // ── main update ────────────────────────────────────────────────────────────
+  function update() {
+    const capital = +$('s-capital').value;
+    const monthly = +$('s-monthly').value;
+    const rate    = +$('s-rate').value;
+    const nis     = +$('s-nis').value;
+
+    const nisUsd   = nis / rate;
+    const effective = capital + nisUsd;
+
+    $('v-capital').textContent = '$' + capital.toLocaleString();
+    $('v-monthly').textContent = '$' + monthly.toLocaleString();
+    $('v-rate').textContent    = rate.toFixed(2);
+    $('v-nis').textContent     = '₪' + nis.toLocaleString();
+
+    $('breakdown').textContent =
+      `$${capital.toLocaleString()} + ₪${nis.toLocaleString()} ÷ ${rate.toFixed(2)} = $${Math.round(nisUsd).toLocaleString()} NIS portion`;
+    $('eff-total').textContent = usd(effective);
+
+    buildCards(effective, monthly);
+    buildChart(effective, monthly);
+  }
+
+  ['s-capital','s-monthly','s-rate','s-nis'].forEach(id =>
+    $(id).addEventListener('input', update)
+  );
+
+  update();
+</script>
+</body>
+</html>
