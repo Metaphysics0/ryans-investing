@@ -9,80 +9,80 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0b0f19;
-      color: #e2e8f0;
+      background: #f1f5f9;
+      color: #1e293b;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
-      padding: 2rem 1.5rem;
+      padding: 1rem 1.25rem;
     }
 
     .container { max-width: 1080px; margin: 0 auto; }
 
-    header { text-align: center; margin-bottom: 2rem; }
+    header { text-align: center; margin-bottom: 0.75rem; }
     header h1 {
-      font-size: 1.75rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      color: #60a5fa;
+      color: #1d4ed8;
       letter-spacing: -0.02em;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.15rem;
     }
-    header p { color: #64748b; font-size: 0.875rem; }
+    header p { color: #94a3b8; font-size: 0.75rem; }
 
     .tickers {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
     }
     .ticker {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #94a3b8;
-      font-size: 0.78rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      font-size: 0.7rem;
       font-weight: 600;
       letter-spacing: 0.04em;
-      padding: 0.25rem 0.75rem;
+      padding: 0.15rem 0.55rem;
       border-radius: 999px;
     }
 
-    /* ── Sliders card ── */
+    /* ── Cards ── */
     .card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 14px;
-      padding: 1.75rem 2rem;
-      margin-bottom: 1.5rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
     }
 
     .sliders-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.6rem 2.5rem;
+      gap: 0.85rem 2rem;
     }
 
-    .slider-group { display: flex; flex-direction: column; gap: 0.55rem; }
+    .slider-group { display: flex; flex-direction: column; gap: 0.3rem; }
 
     .slider-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
-    .slider-name { font-size: 0.82rem; color: #94a3b8; }
-    .slider-val  { font-size: 1.05rem; font-weight: 700; color: #60a5fa; }
+    .slider-name { font-size: 0.72rem; color: #64748b; }
+    .slider-val  { font-size: 0.88rem; font-weight: 700; color: #1d4ed8; }
 
     input[type="range"] {
       -webkit-appearance: none;
       width: 100%;
-      height: 5px;
+      height: 4px;
       border-radius: 3px;
-      background: #1f2937;
+      background: #e2e8f0;
       outline: none;
       cursor: pointer;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 17px; height: 17px;
+      width: 14px; height: 14px;
       background: #3b82f6;
       border-radius: 50%;
       border: 2px solid #1d4ed8;
@@ -93,67 +93,67 @@
 
     /* effective capital banner */
     .eff-banner {
-      margin-top: 1.5rem;
-      background: #0b1220;
-      border: 1px solid #1e3a5f;
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
+      margin-top: 0.85rem;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
-    .eff-left .label { font-size: 0.78rem; color: #64748b; margin-bottom: 0.2rem; }
-    .eff-left .breakdown { font-size: 0.75rem; color: #475569; }
-    .eff-total { font-size: 1.5rem; font-weight: 700; color: #34d399; }
+    .eff-left .label { font-size: 0.7rem; color: #64748b; margin-bottom: 0.1rem; }
+    .eff-left .breakdown { font-size: 0.68rem; color: #94a3b8; }
+    .eff-total { font-size: 1.15rem; font-weight: 700; color: #16a34a; }
 
     /* ── Projection cards ── */
     .proj-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
     }
 
     .proj-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 14px;
-      padding: 1.4rem 1.5rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
     }
     .proj-year {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: #64748b;
-      margin-bottom: 1rem;
+      color: #94a3b8;
+      margin-bottom: 0.6rem;
     }
 
     .scenario {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.55rem 0;
-      border-bottom: 1px solid #0f172a;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid #f1f5f9;
     }
     .scenario:last-child { border-bottom: none; }
 
-    .sc-left { display: flex; align-items: center; gap: 0.45rem; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .dot-opt { background: #34d399; }
-    .dot-avg { background: #60a5fa; }
-    .dot-con { background: #f59e0b; }
+    .sc-left { display: flex; align-items: center; gap: 0.35rem; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-opt { background: #16a34a; }
+    .dot-avg { background: #2563eb; }
+    .dot-con { background: #d97706; }
 
-    .sc-label { font-size: 0.8rem; color: #94a3b8; }
+    .sc-label { font-size: 0.72rem; color: #64748b; }
 
     .sc-right { text-align: right; }
-    .sc-amount { font-size: 0.95rem; font-weight: 700; }
-    .amt-opt { color: #34d399; }
-    .amt-avg { color: #60a5fa; }
-    .amt-con { color: #f59e0b; }
-    .sc-gain { font-size: 0.7rem; color: #475569; margin-top: 0.1rem; }
+    .sc-amount { font-size: 0.85rem; font-weight: 700; }
+    .amt-opt { color: #16a34a; }
+    .amt-avg { color: #2563eb; }
+    .amt-con { color: #d97706; }
+    .sc-gain { font-size: 0.63rem; color: #94a3b8; margin-top: 0.05rem; }
 
     /* ── Chart ── */
     .chart-header {
@@ -161,19 +161,19 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
     }
-    .chart-title { font-size: 0.9rem; color: #94a3b8; font-weight: 600; }
+    .chart-title { font-size: 0.78rem; color: #64748b; font-weight: 600; }
 
     .legend {
       display: flex;
-      gap: 1.25rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
-    .legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: #64748b; }
-    .legend-line { width: 18px; height: 3px; border-radius: 2px; }
-    .legend-dash { width: 18px; height: 0; border-top: 2px dashed #475569; }
+    .legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: #94a3b8; }
+    .legend-line { width: 16px; height: 2.5px; border-radius: 2px; }
+    .legend-dash { width: 16px; height: 0; border-top: 2px dashed #cbd5e1; }
 
     @media (max-width: 680px) {
       .sliders-grid  { grid-template-columns: 1fr; }
@@ -253,9 +253,9 @@
     <div class="chart-header">
       <span class="chart-title">Portfolio Growth — 10-Year Horizon</span>
       <div class="legend">
-        <div class="legend-item"><div class="legend-line" style="background:#34d399"></div>Optimistic 10%</div>
-        <div class="legend-item"><div class="legend-line" style="background:#60a5fa"></div>Average 7%</div>
-        <div class="legend-item"><div class="legend-line" style="background:#f59e0b"></div>Conservative 5%</div>
+        <div class="legend-item"><div class="legend-line" style="background:#16a34a"></div>Optimistic 10%</div>
+        <div class="legend-item"><div class="legend-line" style="background:#2563eb"></div>Average 7%</div>
+        <div class="legend-item"><div class="legend-line" style="background:#d97706"></div>Conservative 5%</div>
         <div class="legend-item"><div class="legend-dash"></div>Contributions</div>
       </div>
     </div>
@@ -307,10 +307,10 @@
       data: {
         labels,
         datasets: [
-          { label: 'Optimistic',     data: opt,    borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.07)',  borderWidth: 2.5, pointRadius: 0, fill: true,  tension: 0.35 },
-          { label: 'Average',        data: avg,    borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.07)',  borderWidth: 2.5, pointRadius: 0, fill: true,  tension: 0.35 },
-          { label: 'Conservative',   data: con,    borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.07)', borderWidth: 2.5, pointRadius: 0, fill: true,  tension: 0.35 },
-          { label: 'Contributed',    data: contrib, borderColor: '#475569', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
+          { label: 'Optimistic',     data: opt,    borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)',   borderWidth: 2, pointRadius: 0, fill: true,  tension: 0.35 },
+          { label: 'Average',        data: avg,    borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)',   borderWidth: 2, pointRadius: 0, fill: true,  tension: 0.35 },
+          { label: 'Conservative',   data: con,    borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,0.08)',  borderWidth: 2, pointRadius: 0, fill: true,  tension: 0.35 },
+          { label: 'Contributed',    data: contrib, borderColor: '#cbd5e1', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
         ]
       },
       options: {
@@ -319,9 +319,11 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#0f172a',
-            borderColor: '#1f2937',
+            backgroundColor: '#fff',
+            borderColor: '#e2e8f0',
             borderWidth: 1,
+            titleColor: '#1e293b',
+            bodyColor: '#475569',
             callbacks: {
               label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.parsed.y).toLocaleString()}`
             }
@@ -329,18 +331,18 @@
         },
         scales: {
           x: {
-            grid: { color: '#1a2236' },
+            grid: { color: '#f1f5f9' },
             ticks: {
-              color: '#475569',
+              color: '#94a3b8',
               maxRotation: 0,
               autoSkip: false,
               callback: (_, i) => labels[i],
             }
           },
           y: {
-            grid: { color: '#1a2236' },
+            grid: { color: '#f1f5f9' },
             ticks: {
-              color: '#475569',
+              color: '#94a3b8',
               callback: v => v >= 1e6
                 ? '$' + (v / 1e6).toFixed(2) + 'M'
                 : '$' + (v / 1e3).toFixed(0) + 'K'
