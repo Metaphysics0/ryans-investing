@@ -626,7 +626,7 @@
 					: "";
 
 				$("breakdown").textContent =
-					`$${capital.toLocaleString()} + ₪${nis.toLocaleString()} ÷ ${rate.toFixed(2)} = $${Math.round(nisUsd).toLocaleString()} NIS portion`;
+					`$${capital.toLocaleString()} + (₪${nis.toLocaleString()} ÷ ${rate.toFixed(2)}) = $${effective.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} starting capital`;
 				$("eff-total").textContent = usd(effective);
 
 				saveToStorage();
