@@ -318,7 +318,10 @@
 					<div class="slider-group">
 						<div class="slider-header">
 							<span class="slider-name">Monthly Contribution</span>
-							<span class="slider-val" id="v-monthly">$2,000</span>
+							<div style="text-align: right; line-height: 1.15">
+								<span class="slider-val" id="v-monthly">$2,000</span>
+								<span id="v-monthly-nis" style="display: block; font-size: 0.68rem; color: #94a3b8"></span>
+							</div>
 						</div>
 						<input
 							type="range"
@@ -590,6 +593,19 @@
 			}
 
 			// ── main update ────────────────────────────────────────────────────────────
+			const STORAGE_IDS = ["s-capital", "s-monthly", "s-rate", "s-nis"];
+
+			function loadFromStorage() {
+				STORAGE_IDS.forEach((id) => {
+					const saved = localStorage.getItem(id);
+					if (saved !== null) $(id).value = saved;
+				});
+			}
+
+			function saveToStorage() {
+				STORAGE_IDS.forEach((id) => localStorage.setItem(id, $(id).value));
+			}
+
 			function update() {
 				const capital = +$("s-capital").value;
 				const monthly = +$("s-monthly").value;
@@ -604,10 +620,16 @@
 				$("v-rate").textContent = rate.toFixed(2);
 				$("v-nis").textContent = "₪" + nis.toLocaleString();
 
+				const monthlyNis = monthly * rate;
+				$("v-monthly-nis").textContent = monthly > 0
+					? `(₪${monthlyNis.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`
+					: "";
+
 				$("breakdown").textContent =
 					`$${capital.toLocaleString()} + ₪${nis.toLocaleString()} ÷ ${rate.toFixed(2)} = $${Math.round(nisUsd).toLocaleString()} NIS portion`;
 				$("eff-total").textContent = usd(effective);
 
+				saveToStorage();
 				buildCards(effective, monthly);
 				buildChart(effective, monthly);
 			}
@@ -616,6 +638,7 @@
 				$(id).addEventListener("input", update),
 			);
 
+			loadFromStorage();
 			update();
 		</script>
 	</body>
